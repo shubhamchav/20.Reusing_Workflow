@@ -1,10 +1,9 @@
 name: Another Workflow
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
       
 jobs:
   call_from_local:
-    uses: .github/workflows/base.yml
-    with:
-      version: 'v2'
+    uses: ./.github/workflows/base.yml
+  
