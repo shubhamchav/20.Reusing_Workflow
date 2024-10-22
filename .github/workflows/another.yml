@@ -1,5 +1,4 @@
 name: Another Workflow
-
 on:
   workflow_dispatch:
       
