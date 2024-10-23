@@ -6,5 +6,4 @@ on:
 
 jobs:
   deploy:
-    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master  # Reference the reusable workflow at the job level
-  
+    uses: ${{ github.repository }}.github/workflows/base.yml@master  # Reference the reusable workflow dynamically
