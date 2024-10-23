@@ -10,8 +10,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-        
+
+      - name: Print Current Directory
+        run: pwd  # This will print the current working directory
+
       - name: Invoke Deployment
-        uses: ./.github/workflows/base.yml  # Reference the workflow correctly
-        env:
-          VERSION: ${{ github.run_number }}  # This is valid to access
+        uses: ./.github/workflows/base.yml@master  # Replace with your actual owner/repo
+        with:
+          VERSION: ${{ github.run_number }}  # Pass parameters via 'with'
