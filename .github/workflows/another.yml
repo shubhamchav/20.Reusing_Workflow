@@ -11,7 +11,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         
-      - name: Invoke Deployment
-        uses: ./.github/workflows/base.yml  # Reference the workflow correctly
-        env:
-          VERSION: ${{ github.run_number }}  # This is valid to access
+      - name: Invoke Base Workflow
+        uses: ./.github/workflows/base.yml  # This is incorrect for workflows
+        with:
+          # You can pass inputs here if your base.yml accepts inputs
+          version: ${{ github.run_number }}  # This should match the input expected by base.yml
