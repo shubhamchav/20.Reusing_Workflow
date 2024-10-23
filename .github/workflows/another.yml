@@ -6,4 +6,5 @@ on:
 
 jobs:
   deploy:
-    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master 
+    name: Demo
+    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
