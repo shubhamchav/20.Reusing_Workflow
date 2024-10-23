@@ -1,6 +1,8 @@
 name: Another Workflow
 on:
-  pull_request:
+  push:
+    branches:
+      - master  # Change this to the branch you want to trigger the workflow on
 
 jobs:
   deploy:
@@ -10,6 +12,6 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Invoke Deployment
-        uses: ./${{ github.event.pull_request.head.repo.name }}/.github/workflows/base.yml
+        uses: ./${{ github.event.repository.name }}/.github/workflows/base.yml
         env:
           VERSION: ${{ github.run_number }}
