@@ -1,8 +1,15 @@
 name: Another Workflow
 on:
-  workflow_dispatch:
-      
+  pull_request:
+
 jobs:
-  call_from_local:
-    uses: ./.github/workflows/base.yml
-  
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        
+      - name: Invoke Deployment
+        uses: ./${{ github.event.pull_request.head.repo.name }}/.github/workflows/base.yml
+        env:
+          VERSION: ${{ github.run_number }}
