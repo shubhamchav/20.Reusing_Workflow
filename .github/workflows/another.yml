@@ -6,7 +6,4 @@ on:
 
 jobs:
   deploy:
-    uses: ${{ env.REPO_PATH }}.github/workflows/base.yml@master
-
-env:
-  REPO_PATH: shubhamchav/20.Reusing_Workflow/
+    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master 
