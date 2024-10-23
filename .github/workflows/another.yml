@@ -14,7 +14,10 @@ jobs:
       - name: Print Current Directory
         run: pwd  # This will print the current working directory
 
+      - name: List Files
+        run: ls -la  # This will list all files and directories in the current directory
+
       - name: Invoke Deployment
-        uses: ./.github/workflows/base.yml@master  # Replace with your actual owner/repo
+        uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master  # Replace with your actual repository details
         with:
           VERSION: ${{ github.run_number }}  # Pass parameters via 'with'
