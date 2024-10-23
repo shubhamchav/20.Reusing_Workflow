@@ -7,5 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Print Current Directory
+        run: pwd  # This will print the current working directory
+
+      - name: List Files
+        run: ls -la  # This will list all files and directories in the current directory
+
       - name: Build Step
-        run: echo "Building version"
+        run: echo "Building version ${{ inputs.VERSION }}"  # Use the input variable
