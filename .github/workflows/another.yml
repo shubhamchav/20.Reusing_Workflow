@@ -2,12 +2,8 @@ name: Another Workflow
 on:
   push:
     branches:
-      - master
-
-env:
-  REPO_OWNER: shubhamchav
-  REPO_NAME: 20.Reusing_Workflow
+      - master  # Change this to the branch you want to trigger the workflow on
 
 jobs:
   deploy:
-    uses: ${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.github/workflows/base.yml@master  # Dynamic reference to the reusable workflow
+    uses: ${{ github.repository }}.github/workflows/base.yml@master  # Reference the reusable workflow dynamically
