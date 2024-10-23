@@ -1,6 +1,6 @@
 name: Base Workflow
 on:
-  workflow_call:
+  workflow_call:  # This allows the workflow to be called by other workflows
 
 jobs:
   build:
@@ -9,4 +9,3 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
