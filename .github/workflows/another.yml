@@ -6,4 +6,4 @@ on:
 
 jobs:
   deploy:
-    uses: ${{ github.repository }}.github/workflows/base.yml@master  # Reference the reusable workflow dynamically
+    uses: ${{ github.repository }}.github/workflows/base.yml@${{ github.ref_name }}  # Dynamic reference to the reusable workflow with branch
