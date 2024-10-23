@@ -5,11 +5,17 @@ on:
       - master  # Change this to the branch you want to trigger the workflow on
 
 jobs:
-  deploy:
-    name: Demo
+  checkout:
+    name: Checkout Code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Reuse workflow inside step (this will trigger the error)
+
+  reuse-workflow:
+    name: Reuse Workflow
+    runs-on: ubuntu-latest
+    needs: checkout  # Ensure this job runs after the checkout job
+    steps:
+      - name: Checkout code
         uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
