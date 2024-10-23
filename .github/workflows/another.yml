@@ -4,6 +4,9 @@ on:
     branches:
       - master  # Change this to the branch you want to trigger the workflow on
 
+env:
+  REPO_PATH: shubhamchav/20.Reusing_Workflow  # Define your repository path here
+
 jobs:
   deploy:
-    uses: ${{ github.repository }}.github/workflows/base.yml@master  # Reference the reusable workflow dynamically
+    uses: ${{ env.REPO_PATH }}.github/workflows/base.yml@master  # Reference the reusable workflow dynamically
