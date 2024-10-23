@@ -17,4 +17,4 @@ jobs:
         run: ls -la  # This will list all files and directories in the current directory
 
       - name: Build Step
-        run: echo "Building version ${{ inputs.VERSION }}"  # Use the input variable
+        run: echo "Building version"  # Use the input variable
