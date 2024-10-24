@@ -26,7 +26,7 @@ jobs:
         run: echo "Computer name"
 
   copy-from-s3:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: get-computer-name
     steps:
       - name: Copy from S3
