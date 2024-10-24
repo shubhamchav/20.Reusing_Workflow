@@ -1,6 +1,14 @@
+# .github/workflows/deployment.yaml
 name: Base Workflow
 on:
   workflow_call:  # This allows the workflow to be called by other workflows
+    inputs:
+      VERSION:
+        required: true  # Make it required
+        type: string  # Specify the input type
+      ENVIRONMENT:
+        required: true  # Make it required
+        type: string  # Specify the input type
 
 jobs:
   build:
@@ -17,4 +25,4 @@ jobs:
         run: ls -la  # This will list all files and directories in the current directory
 
       - name: Build Step
-        run: echo "Building version"  # Use the input variable
+        run: echo "Building version ${{ inputs.VERSION }} for environment ${{ inputs.ENVIRONMENT }}"  # Use the input variables
