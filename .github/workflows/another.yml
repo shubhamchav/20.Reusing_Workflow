@@ -37,5 +37,5 @@ jobs:
     needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
-      VERSION: '1.0.0'  # Static version number
-      ENVIRONMENT: 'production'  # Static environment value
+      VERSION: '1.0.0' 
+      ENVIRONMENT: 'production'  
