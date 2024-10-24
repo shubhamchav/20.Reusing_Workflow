@@ -7,9 +7,12 @@ on:
 jobs:
   set-environment:
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}  # Define the output for use
     steps:
       - name: Set environment
-        run: echo "Setting environment"
+        id: set-env
+        run: echo "::set-output name=environment::your_environment_value"
 
   prerequisite:
     runs-on: ubuntu-latest
@@ -35,4 +38,9 @@ jobs:
   deployment:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
-    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
+    runs-on: repspark-runner  # Define the runner for this job
+    steps:
+      - name: Deploy
+        uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
+        with:
+          environment: ${{ needs.set-environment.outputs.environment }}  # Pass environment as input
