@@ -7,8 +7,4 @@ on:
 jobs:
   checkout:
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master 
-  run-checkout:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  
