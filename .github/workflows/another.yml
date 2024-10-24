@@ -38,9 +38,6 @@ jobs:
   deployment:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
-    runs-on: repspark-runner  # Define the runner for this job
-    steps:
-      - name: Deploy
-        uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
-        with:
-          environment: ${{ needs.set-environment.outputs.environment }}  # Pass environment as input
+    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
+    with:
+      environment: ${{ needs.set-environment.outputs.environment }}  # Pass the environment as an input if required
