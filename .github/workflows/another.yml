@@ -40,4 +40,4 @@ jobs:
     needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
-      environment: ${{ needs.set-environment.outputs.environment }}  # Pass the environment as an input if required
+      environment: ${{ needs.set-environment.outputs.environment }}  # Pass the environment
