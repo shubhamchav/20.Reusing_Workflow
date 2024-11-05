@@ -11,6 +11,7 @@ jobs:
       - name: Set environment
         run: echo "Setting environment"
         id: set_env  # Assign an ID to access outputs later
+        # You might want to define outputs here as well, if needed
 
   prerequisite:
     runs-on: ubuntu-latest
@@ -61,8 +62,7 @@ jobs:
     if: ${{ always() }}  # Ensure this job runs regardless of previous failures
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
-      environment: ${{ needs.set-environment.outputs.environment }}  # Adjusted if needed
-      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"  # Ensure this output is defined in copy-from-s3
+      environment: ${{ needs.set-environment.outputs.environment }}  # Ensure this output is defined in set-environment
       git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}  # Ensure this output is defined in prerequisite
       computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}  # Ensure this output is defined in get-computer-name
 
