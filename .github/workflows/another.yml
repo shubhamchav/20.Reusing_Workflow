@@ -45,9 +45,17 @@ jobs:
       - name: Check Condition
         run: |
           echo "Checking conditions of previous jobs."
+          echo "Job results:"
+          echo "set-environment result: ${{ needs.set-environment.result }}"
+          echo "prerequisite result: ${{ needs.prerequisite.result }}"
+          echo "get-computer-name result: ${{ needs.get-computer-name.result }}"
+          echo "copy-from-s3 result: ${{ needs.copy-from-s3.result }}"
+
           if [[ "${{ needs.set-environment.result }}" == "failure" || "${{ needs.prerequisite.result }}" == "failure" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "failure" ]]; then
             echo "Condition failed in previous jobs, updating ROLLBACK_ATTEMPTED to true."
             echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Update the environment variable to true
+          else
+            echo "All previous jobs succeeded. Keeping ROLLBACK_ATTEMPTED as false."
           fi
 
   print-env:
