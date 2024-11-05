@@ -58,14 +58,19 @@ jobs:
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
       environment: ${{ needs.set-environment.outputs.environment }}
-     
+      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"
+      git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}
+      computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}
 
   check-rollback-status:
     needs:
       - rollback-to-previous-version
     runs-on: ubuntu-latest
+    outputs:
+      ROLLBACK_ATTEMPTED: ${{ steps.check_rollback.outputs.ROLLBACK_ATTEMPTED }}
     steps:
       - name: Check Rollback Status
+        id: check_rollback
         run: echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Set an environment variable for next jobs
 
   slack-notify-deploy-success:
@@ -76,7 +81,7 @@ jobs:
       needs.get-computer-name.result == 'success' &&
       needs.copy-from-s3.result == 'success' &&
       (needs.deployment.result == 'success' || 
-       steps.check-rollback-status.outputs.ROLLBACK_ATTEMPTED == 'true'))  # Check for rollback attempt
+       needs.check-rollback-status.outputs.ROLLBACK_ATTEMPTED == 'true'))  # Check for rollback attempt
     runs-on: ubuntu-latest
     environment: ${{ needs.set-environment.outputs.environment }}
     needs:
