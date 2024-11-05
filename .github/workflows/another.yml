@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Set environment
         run: echo "Setting environment"
-        id: set_env  # Assign an ID to access outputs later
-        # You might want to define outputs here as well, if needed
 
   prerequisite:
     runs-on: ubuntu-latest
@@ -19,92 +17,25 @@ jobs:
     steps:
       - name: Prerequisite step
         run: echo "Running prerequisite"
-        id: prerequisite_step  # Assign an ID to access outputs later
 
   get-computer-name:
     runs-on: ubuntu-latest
     needs: prerequisite
     steps:
       - name: Get computer name
-        run: echo "Computer name"  # You should output the actual computer name here
-        id: computer_name  # Assign an ID to access outputs later
+        run: echo "Computer name"
 
   copy-from-s3:
     runs-on: windows-latest
     needs: get-computer-name
     steps:
       - name: Copy from S3
-        run: echo "Copying from S3"  # Replace with your actual copy logic
-        id: copy_step  # Assign an ID to access outputs later
+        run: echo "Copying from S3"
 
   deployment:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    needs:
-      - set-environment
-      - prerequisite
-      - get-computer-name
-      - copy-from-s3
-    runs-on: ubuntu-latest  # Specify your runner
-    steps:
-      - name: Deploy Application
-        run: |
-          echo "Deploying application..."
-          # Add your deployment logic here
-          echo "Deployment complete."
-
-  rollback-to-previous-version:
-    needs:
-      - set-environment
-      - prerequisite
-      - get-computer-name
-      - copy-from-s3
-      - deployment
-    if: ${{ always() }}  # Ensure this job runs regardless of previous failures
+    needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
-      environment: ${{ needs.set-environment.outputs.environment }}  # Ensure this output is defined in set-environment
-      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"  # Ensure this output is defined in copy-from-s3
-      git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}  # Ensure this output is defined in prerequisite
-      computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}  # Ensure this output is defined in get-computer-name
-
-  check-rollback-status:
-    needs:
-      - rollback-to-previous-version
-    runs-on: ubuntu-latest
-    outputs:
-      ROLLBACK_ATTEMPTED: ${{ steps.check_rollback.outputs.ROLLBACK_ATTEMPTED }}
-    steps:
-      - name: Initialize Rollback Status
-        id: init_rollback
-        run: echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV  # Initialize to false
-
-      - name: Check Rollback Status
-        id: check_rollback
-        run: |
-          if [ "${{ needs.rollback-to-previous-version.result }}" == "success" ]; then
-            echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV  # No rollback attempted
-          else
-            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Rollback was attempted
-          fi
-
-  slack-notify-deploy-success:
-    if:
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && 
-      (needs.set-environment.result == 'success' &&
-      needs.prerequisite.result == 'success' &&
-      needs.get-computer-name.result == 'success' &&
-      needs.copy-from-s3.result == 'success' &&
-      (needs.deployment.result == 'success' || 
-       needs.check-rollback-status.outputs.ROLLBACK_ATTEMPTED == 'true'))  # Check for rollback attempt
-    runs-on: ubuntu-latest
-    environment: ${{ needs.set-environment.outputs.environment }}  # Adjusted if needed
-    needs:
-      - set-environment
-      - prerequisite
-      - get-computer-name
-      - copy-from-s3
-      - deployment
-      - check-rollback-status
-    steps:
-      - name: Print Deployment Status
-        run: echo "Deployment successful in environment"
+      VERSION: ${{ github.run_number }} 
+      ENVIRONMENT: 'production'  
