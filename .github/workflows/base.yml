@@ -1,28 +1,38 @@
-# .github/workflows/deployment.yaml
+# .github/workflows/base.yml
 name: Base Workflow
 on:
-  workflow_call:  # This allows the workflow to be called by other workflows
+  workflow_call:
     inputs:
       VERSION:
-        required: true  # Make it required
-        type: string  # Specify the input type
+        required: true
+        type: string
       ENVIRONMENT:
-        required: true  # Make it required
-        type: string  # Specify the input type
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Print Current Directory
-        run: pwd  # This will print the current working directory
+        run: pwd
 
       - name: List Files
-        run: ls -la  # This will list all files and directories in the current directory
+        run: ls -la
 
       - name: Build Step
-        run: echo "Building version ${{ inputs.VERSION }} for environment ${{ inputs.ENVIRONMENT }}"  # Use the input variables
+        run: echo "Building version ${{ inputs.VERSION }} for environment ${{ inputs.ENVIRONMENT }}"
+
+      - name: Set Outputs
+        id: set_outputs
+        run: |
+          echo "::set-output name=GIT_DIR_PATH::/mock/path/to/git/dir"  # Set as output
+          echo "::set-output name=COMPUTER_WEB_BASE64::mock_base64_value"  # Set as output
+
+    outputs:
+      GIT_DIR_PATH: ${{ steps.set_outputs.outputs.GIT_DIR_PATH }}
+      COMPUTER_WEB_BASE64: ${{ steps.set_outputs.outputs.COMPUTER_WEB_BASE64 }}
