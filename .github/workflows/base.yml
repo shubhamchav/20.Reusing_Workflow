@@ -27,12 +27,4 @@ jobs:
       - name: Build Step
         run: echo "Building version ${{ inputs.VERSION }} for environment ${{ inputs.ENVIRONMENT }}"
 
-      - name: Set Outputs
-        id: set_outputs
-        run: |
-          echo "GIT_DIR_PATH=/mock/path/to/git/dir" >> $GITHUB_ENV  # Set as output
-          echo "COMPUTER_WEB_BASE64=mock_base64_value" >> $GITHUB_ENV  # Set as output
-
-    outputs:
-      GIT_DIR_PATH: ${{ env.GIT_DIR_PATH }}
-      COMPUTER_WEB_BASE64: ${{ env.COMPUTER_WEB_BASE64 }}
+     
