@@ -73,9 +73,18 @@ jobs:
     outputs:
       ROLLBACK_ATTEMPTED: ${{ steps.check_rollback.outputs.ROLLBACK_ATTEMPTED }}
     steps:
+      - name: Initialize Rollback Status
+        id: init_rollback
+        run: echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV  # Initialize to false
+
       - name: Check Rollback Status
         id: check_rollback
-        run: echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Set an environment variable for next jobs
+        run: |
+          if [ "${{ needs.rollback-to-previous-version.result }}" == "success" ]; then
+            echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV  # No rollback attempted
+          else
+            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Rollback was attempted
+          fi
 
   slack-notify-deploy-success:
     if:
