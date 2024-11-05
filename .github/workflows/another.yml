@@ -63,6 +63,7 @@ jobs:
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
       environment: ${{ needs.set-environment.outputs.environment }}  # Ensure this output is defined in set-environment
+      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"  # Ensure this output is defined in copy-from-s3
       git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}  # Ensure this output is defined in prerequisite
       computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}  # Ensure this output is defined in get-computer-name
 
