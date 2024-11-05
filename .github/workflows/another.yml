@@ -2,10 +2,7 @@ name: Another Workflow
 on:
   push:
     branches:
-      - master  # Change this to the branch you want to trigger the workflow on
-
-env:
-  ROLLBACK_ATTEMPTED: false  # Set the default value of the environment variable
+      - master
 
 jobs:
   set-environment:
@@ -40,21 +37,28 @@ jobs:
   check-condition:
     runs-on: ubuntu-latest
     needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
-    if: always()  # Ensure this job runs regardless of the results of previous jobs
+    if: always()
+    outputs:
+      rollback_attempted: ${{ steps.set_rollback.outputs.ROLLBACK_ATTEMPTED }}
     steps:
-      - name: Set ROLLBACK_ATTEMPTED to true
+      - name: Check Condition
+        id: set_rollback
         run: |
-          echo "Setting ROLLBACK_ATTEMPTED to true regardless of previous job outcomes."
-          echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Update the environment variable to true
+          echo "Checking conditions of previous jobs."
+          # If any previous job failed, set ROLLBACK_ATTEMPTED to true
+          if [[ "${{ needs.set-environment.result }}" == "failure" || "${{ needs.prerequisite.result }}" == "failure" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "failure" ]]; then
+            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV
+            echo "::set-output name=ROLLBACK_ATTEMPTED::true"
+          else
+            echo "::set-output name=ROLLBACK_ATTEMPTED::false"
+          fi
 
   print-env:
     runs-on: ubuntu-latest
     needs: check-condition
-    env:
-      ROLLBACK_ATTEMPTED: ${{ env.ROLLBACK_ATTEMPTED }}  # Pass the updated value to this job
     steps:
       - name: Print ROLLBACK_ATTEMPTED After
-        run: echo "ROLLBACK_ATTEMPTED After:$ROLLBACK_ATTEMPTED"
+        run: echo "ROLLBACK_ATTEMPTED After:${{ needs.check-condition.outputs.rollback_attempted }}"
 
   deployment:
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
