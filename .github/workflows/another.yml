@@ -55,7 +55,7 @@ jobs:
       - copy-from-s3
       - deployment
     if: ${{ always() }}  # Ensure this job runs regardless of previous failures
-    uses: ./.github/workflows/deployment.yaml  # Reference the reusable workflow here
+    uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
       environment: ${{ needs.set-environment.outputs.environment }}
       version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"
