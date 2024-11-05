@@ -39,24 +39,13 @@ jobs:
 
   check-condition:
     runs-on: ubuntu-latest
-    needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]  # Ensure it waits for all previous jobs
+    needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
     if: always()  # Ensure this job runs regardless of the results of previous jobs
     steps:
-      - name: Check Condition
+      - name: Set ROLLBACK_ATTEMPTED to true
         run: |
-          echo "Checking conditions of previous jobs."
-          echo "Job results:"
-          echo "set-environment result: ${{ needs.set-environment.result }}"
-          echo "prerequisite result: ${{ needs.prerequisite.result }}"
-          echo "get-computer-name result: ${{ needs.get-computer-name.result }}"
-          echo "copy-from-s3 result: ${{ needs.copy-from-s3.result }}"
-
-          if [[ "${{ needs.set-environment.result }}" == "failure" || "${{ needs.prerequisite.result }}" == "failure" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "failure" ]]; then
-            echo "Condition failed in previous jobs, updating ROLLBACK_ATTEMPTED to true."
-            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Update the environment variable to true
-          else
-            echo "All jobs succeeded. No rollback needed."
-          fi
+          echo "Setting ROLLBACK_ATTEMPTED to true regardless of previous job outcomes."
+          echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV  # Update the environment variable to true
 
   print-env:
     runs-on: ubuntu-latest
