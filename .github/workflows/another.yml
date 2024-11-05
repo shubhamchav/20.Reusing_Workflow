@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Set environment
         run: echo "Setting environment"
+        id: set_env  # Assign an ID to access outputs later
 
   prerequisite:
     runs-on: ubuntu-latest
@@ -17,6 +18,7 @@ jobs:
     steps:
       - name: Prerequisite step
         run: echo "Running prerequisite"
+        id: prerequisite_step  # Assign an ID to access outputs later
 
   get-computer-name:
     runs-on: ubuntu-latest
@@ -24,6 +26,7 @@ jobs:
     steps:
       - name: Get computer name
         run: echo "Computer name"  # You should output the actual computer name here
+        id: computer_name  # Assign an ID to access outputs later
 
   copy-from-s3:
     runs-on: windows-latest
@@ -31,6 +34,7 @@ jobs:
     steps:
       - name: Copy from S3
         run: echo "Copying from S3"  # Replace with your actual copy logic
+        id: copy_step  # Assign an ID to access outputs later
 
   deployment:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -57,10 +61,10 @@ jobs:
     if: ${{ always() }}  # Ensure this job runs regardless of previous failures
     uses: shubhamchav/20.Reusing_Workflow/.github/workflows/base.yml@master
     with:
-      environment: ${{ needs.set-environment.outputs.environment }}
-      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"
-      git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}
-      computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}
+      environment: ${{ needs.set-environment.outputs.environment }}  # Adjusted if needed
+      version: "${{ needs.copy-from-s3.outputs.FOLDER_NAME }}"  # Ensure this output is defined in copy-from-s3
+      git_dir_path: ${{ needs.prerequisite.outputs.GIT_DIR_PATH }}  # Ensure this output is defined in prerequisite
+      computer_web_base64: ${{ needs.get-computer-name.outputs.COMPUTER_WEB_BASE64 }}  # Ensure this output is defined in get-computer-name
 
   check-rollback-status:
     needs:
@@ -83,7 +87,7 @@ jobs:
       (needs.deployment.result == 'success' || 
        needs.check-rollback-status.outputs.ROLLBACK_ATTEMPTED == 'true'))  # Check for rollback attempt
     runs-on: ubuntu-latest
-    environment: ${{ needs.set-environment.outputs.environment }}
+    environment: ${{ needs.set-environment.outputs.environment }}  # Adjusted if needed
     needs:
       - set-environment
       - prerequisite
