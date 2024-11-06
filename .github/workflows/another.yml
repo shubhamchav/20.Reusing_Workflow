@@ -48,19 +48,19 @@ jobs:
         run: |
           echo "Checking conditions of previous jobs."
           
-          # Assign each job result to a shell variable
-          SET_ENVIRONMENT_RESULT="${{ needs.set-environment.result }}"
-          PREREQUISITE_RESULT="${{ needs.prerequisite.result }}"
-          GET_COMPUTER_NAME_RESULT="${{ needs.get-computer-name.result }}"
-          COPY_FROM_S3_RESULT="${{ needs.copy-from-s3.result }}"
+          # Assign each job result to a shell variable and trim whitespace
+          SET_ENVIRONMENT_RESULT="$(echo "${{ needs.set-environment.result }}" | xargs)"
+          PREREQUISITE_RESULT="$(echo "${{ needs.prerequisite.result }}" | xargs)"
+          GET_COMPUTER_NAME_RESULT="$(echo "${{ needs.get-computer-name.result }}" | xargs)"
+          COPY_FROM_S3_RESULT="$(echo "${{ needs.copy-from-s3.result }}" | xargs)"
           
           # Print values for debugging
-          echo "SET_ENVIRONMENT_RESULT: $SET_ENVIRONMENT_RESULT"
-          echo "PREREQUISITE_RESULT: $PREREQUISITE_RESULT"
-          echo "GET_COMPUTER_NAME_RESULT: $GET_COMPUTER_NAME_RESULT"
-          echo "COPY_FROM_S3_RESULT: $COPY_FROM_S3_RESULT"
+          echo "SET_ENVIRONMENT_RESULT: '$SET_ENVIRONMENT_RESULT'"
+          echo "PREREQUISITE_RESULT: '$PREREQUISITE_RESULT'"
+          echo "GET_COMPUTER_NAME_RESULT: '$GET_COMPUTER_NAME_RESULT'"
+          echo "COPY_FROM_S3_RESULT: '$COPY_FROM_S3_RESULT'"
           
-          # Use single-line conditional for better handling
+          # Check conditions
           if [[ "$SET_ENVIRONMENT_RESULT" == "success" || "$PREREQUISITE_RESULT" == "success" || "$GET_COMPUTER_NAME_RESULT" == "failure" || "$COPY_FROM_S3_RESULT" == "success" ]]; then
             echo "::set-output name=ROLLBACK_ATTEMPTED::false"
             echo "Condition matched: Setting ROLLBACK_ATTEMPTED to false"
@@ -68,6 +68,7 @@ jobs:
             echo "::set-output name=ROLLBACK_ATTEMPTED::true"
             echo "Condition not matched: Setting ROLLBACK_ATTEMPTED to true"
           fi
+
 
 
 
