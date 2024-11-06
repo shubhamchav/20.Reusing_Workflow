@@ -47,11 +47,20 @@ jobs:
         id: set_rollback
         run: |
           echo "Checking conditions of previous jobs."
-          if [[ "${{ needs.set-environment.result }}" == "success" || "${{ needs.prerequisite.result }}" == "success" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "success" ]]; then
+          
+          # Assign each job result to a shell variable
+          SET_ENVIRONMENT_RESULT="${{ needs.set-environment.result }}"
+          PREREQUISITE_RESULT="${{ needs.prerequisite.result }}"
+          GET_COMPUTER_NAME_RESULT="${{ needs.get-computer-name.result }}"
+          COPY_FROM_S3_RESULT="${{ needs.copy-from-s3.result }}"
+          
+          # Check conditions using the shell variables
+          if [[ "$SET_ENVIRONMENT_RESULT" == "success" || "$PREREQUISITE_RESULT" == "success" || "$GET_COMPUTER_NAME_RESULT" == "failure" || "$COPY_FROM_S3_RESULT" == "success" ]]; then
             echo "::set-output name=ROLLBACK_ATTEMPTED::false"
           else
             echo "::set-output name=ROLLBACK_ATTEMPTED::true"
           fi
+
 
 
   print-env:
