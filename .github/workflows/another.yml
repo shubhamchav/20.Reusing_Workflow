@@ -37,41 +37,39 @@ jobs:
         run: echo "Copying from S3"
 
   check-condition:
-   runs-on: ubuntu-latest
-   needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
-   if: always()
-   outputs:
-    rollback_attempted: ${{ steps.set_rollback.outputs.ROLLBACK_ATTEMPTED }}
-   steps:
-    - name: Check Condition
-      id: set_rollback
-      run: |
-        echo "Checking conditions of previous jobs."
-        
-        # Assign trimmed job result values to shell variables
-        SET_ENVIRONMENT_RESULT="$(echo "${{ needs.set-environment.result }}" | xargs)"
-        PREREQUISITE_RESULT="$(echo "${{ needs.prerequisite.result }}" | xargs)"
-        GET_COMPUTER_NAME_RESULT="$(echo "${{ needs.get-computer-name.result }}" | xargs)"
-        COPY_FROM_S3_RESULT="$(echo "${{ needs.copy-from-s3.result }}" | xargs)"
-        
-        # Print values for debugging
-        echo "SET_ENVIRONMENT_RESULT: '$SET_ENVIRONMENT_RESULT'"
-        echo "PREREQUISITE_RESULT: '$PREREQUISITE_RESULT'"
-        echo "GET_COMPUTER_NAME_RESULT: '$GET_COMPUTER_NAME_RESULT'"
-        echo "COPY_FROM_S3_RESULT: '$COPY_FROM_S3_RESULT'"
-        
-        # Only set ROLLBACK_ATTEMPTED to false if *all* are success
-        if [[ "$SET_ENVIRONMENT_RESULT" == "success" && "$PREREQUISITE_RESULT" == "success" && "$GET_COMPUTER_NAME_RESULT" == "failure" && "$COPY_FROM_S3_RESULT" == "success" ]]; then
-          echo "All conditions matched: Setting ROLLBACK_ATTEMPTED to false"
-          echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV
-        else
-          echo "Condition not fully matched: Setting ROLLBACK_ATTEMPTED to true"
-          echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV
-        fi
-
-
-
-
+    runs-on: ubuntu-latest
+    needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
+    if: always()
+    outputs:
+      rollback_attempted: ${{ steps.set_rollback.outputs.ROLLBACK_ATTEMPTED }}
+    steps:
+      - name: Check Condition
+        id: set_rollback
+        run: |
+          echo "Checking conditions of previous jobs."
+          
+          # Assign trimmed job result values to shell variables
+          SET_ENVIRONMENT_RESULT="$(echo "${{ needs.set-environment.result }}" | xargs)"
+          PREREQUISITE_RESULT="$(echo "${{ needs.prerequisite.result }}" | xargs)"
+          GET_COMPUTER_NAME_RESULT="$(echo "${{ needs.get-computer-name.result }}" | xargs)"
+          COPY_FROM_S3_RESULT="$(echo "${{ needs.copy-from-s3.result }}" | xargs)"
+          
+          # Print values for debugging
+          echo "SET_ENVIRONMENT_RESULT: '$SET_ENVIRONMENT_RESULT'"
+          echo "PREREQUISITE_RESULT: '$PREREQUISITE_RESULT'"
+          echo "GET_COMPUTER_NAME_RESULT: '$GET_COMPUTER_NAME_RESULT'"
+          echo "COPY_FROM_S3_RESULT: '$COPY_FROM_S3_RESULT'"
+          
+          # Only set ROLLBACK_ATTEMPTED to false if *all* are success
+          if [[ "$SET_ENVIRONMENT_RESULT" == "success" && "$PREREQUISITE_RESULT" == "success" && "$GET_COMPUTER_NAME_RESULT" == "failure" && "$COPY_FROM_S3_RESULT" == "success" ]]; then
+            echo "All conditions matched: Setting ROLLBACK_ATTEMPTED to false"
+            echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV
+            echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_OUTPUT
+          else
+            echo "Condition not fully matched: Setting ROLLBACK_ATTEMPTED to true"
+            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_ENV
+            echo "ROLLBACK_ATTEMPTED=true" >> $GITHUB_OUTPUT
+          fi
 
   print-env:
     runs-on: ubuntu-latest
