@@ -61,7 +61,7 @@ jobs:
           echo "COPY_FROM_S3_RESULT: '$COPY_FROM_S3_RESULT'"
           
           # Only set ROLLBACK_ATTEMPTED to false if *all* are success
-          if [[ "$SET_ENVIRONMENT_RESULT" == "success" && "$PREREQUISITE_RESULT" == "success" && "$GET_COMPUTER_NAME_RESULT" == "failure" && "$COPY_FROM_S3_RESULT" == "success" ]]; then
+          if [[ "$SET_ENVIRONMENT_RESULT" == "success" && "$PREREQUISITE_RESULT" == "success" && "$GET_COMPUTER_NAME_RESULT" == "success" && "$COPY_FROM_S3_RESULT" == "success" ]]; then
             echo "All conditions matched: Setting ROLLBACK_ATTEMPTED to false"
             echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_ENV
             echo "ROLLBACK_ATTEMPTED=false" >> $GITHUB_OUTPUT
