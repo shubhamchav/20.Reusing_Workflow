@@ -54,11 +54,19 @@ jobs:
           GET_COMPUTER_NAME_RESULT="${{ needs.get-computer-name.result }}"
           COPY_FROM_S3_RESULT="${{ needs.copy-from-s3.result }}"
           
-          # Check conditions using the shell variables
+          # Print values for debugging
+          echo "SET_ENVIRONMENT_RESULT: $SET_ENVIRONMENT_RESULT"
+          echo "PREREQUISITE_RESULT: $PREREQUISITE_RESULT"
+          echo "GET_COMPUTER_NAME_RESULT: $GET_COMPUTER_NAME_RESULT"
+          echo "COPY_FROM_S3_RESULT: $COPY_FROM_S3_RESULT"
+          
+          # Use single-line conditional for better handling
           if [[ "$SET_ENVIRONMENT_RESULT" == "success" || "$PREREQUISITE_RESULT" == "success" || "$GET_COMPUTER_NAME_RESULT" == "failure" || "$COPY_FROM_S3_RESULT" == "success" ]]; then
             echo "::set-output name=ROLLBACK_ATTEMPTED::false"
+            echo "Condition matched: Setting ROLLBACK_ATTEMPTED to false"
           else
             echo "::set-output name=ROLLBACK_ATTEMPTED::true"
+            echo "Condition not matched: Setting ROLLBACK_ATTEMPTED to true"
           fi
 
 
