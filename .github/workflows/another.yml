@@ -48,11 +48,12 @@ jobs:
         run: |
           echo "Checking conditions of previous jobs."
           # If any previous job failed, set ROLLBACK_ATTEMPTED to true
-          if [[ "${{ needs.set-environment.result }}" == "failure" || "${{ needs.prerequisite.result }}" == "failure" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "failure" ]]
+          if [[ "${{ needs.set-environment.result }}" == "failure" || "${{ needs.prerequisite.result }}" == "failure" || "${{ needs.get-computer-name.result }}" == "failure" || "${{ needs.copy-from-s3.result }}" == "failure" ]]; then
             echo "::set-output name=ROLLBACK_ATTEMPTED::false"
           else
             echo "::set-output name=ROLLBACK_ATTEMPTED::true"
           fi
+
 
   print-env:
     runs-on: ubuntu-latest
