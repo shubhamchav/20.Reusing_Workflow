@@ -72,7 +72,9 @@ jobs:
           
   print-env:
     runs-on: ubuntu-latest
-    needs: check-condition
+    if: ${{ always() }}
+    # Remove check-condition from needs to ensure this job runs independently
+    needs: [set-environment, prerequisite, get-computer-name, copy-from-s3]
     steps:
       - name: Print ROLLBACK_ATTEMPTED After
         run: echo "ROLLBACK_ATTEMPTED After:${{ needs.check-condition.outputs.rollback_attempted || 'false' }}"
